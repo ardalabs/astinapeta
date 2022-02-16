@@ -16,7 +16,7 @@ export default {
     const map = new mapboxgl.Map({
       container: 'map-conatiner',
       style: 'mapbox://styles/mapbox/outdoors-v11',
-      center: [106.816666, -6.200000],
+      center: [0.000000, 109.333336],
       zoom:4,
     })
   },
