@@ -1,8 +1,7 @@
 <template>
   <div>
-    <div style="height:500px" id="map-conatiner">
+    <div style="height:100vh" id="map-conatiner">
     </div>
-    <Tutorial />
   </div>
 </template>
 
@@ -16,7 +15,7 @@ export default {
     // eslint-disable-next-line no-unused-vars
     const map = new mapboxgl.Map({
       container: 'map-conatiner',
-      style: 'mapbox://styles/mapbox/streets-v11',
+      style: 'mapbox://styles/mapbox/outdoors-v11',
       center: [106.816666, -6.200000],
       zoom:4,
     })
