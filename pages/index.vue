@@ -30,6 +30,7 @@ export default {
         let firstSymbolId
         for (const layer of layers) {
           if (layer.type === 'symbol') {
+            console.log(layer.type);
             firstSymbolId = layer.id
             break
           }
@@ -69,6 +70,14 @@ export default {
           firstSymbolId
         )
       })
+      map.on('click', 'area-boundary', (e) => {
+          window.open('/regencies/'+e.features[0].properties.ID, 'newwindow');
+      })
+
+      map.on('mouseenter', 'area-boundary', (e) => {
+        map.getCanvas().style.cursor = 'pointer'
+      })
+    
     },
     getRndInteger(min, max) {
       return Math.floor(Math.random() * (max - min)) + min
