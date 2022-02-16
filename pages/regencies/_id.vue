@@ -1,10 +1,21 @@
 <template>
   <div>
     <div style="height: 100vh" id="map-conatiner"></div>
-    <img class="top-left" height="100px" src="https://i0.wp.com/www.dprd-ponorogo.go.id/wp-content/uploads/2021/10/Partai-Nasdem-Preview.png?fit=501%2C301&ssl=1" alt="" srcset="">
+    <img
+      class="top-left"
+      height="100px"
+      src="https://i0.wp.com/www.dprd-ponorogo.go.id/wp-content/uploads/2021/10/Partai-Nasdem-Preview.png?fit=501%2C301&ssl=1"
+      alt=""
+      srcset=""
+    />
     <nuxt-link class="top-right" to="/">
-          <img height="100%" src="http://cdn.onlinewebfonts.com/svg/img_490217.png" alt="" srcset="">
-        </nuxt-link>
+      <img
+        height="100%"
+        src="http://cdn.onlinewebfonts.com/svg/img_490217.png"
+        alt=""
+        srcset=""
+      />
+    </nuxt-link>
   </div>
 </template>
 
@@ -81,12 +92,12 @@ export default {
         map.getCanvas().style.cursor = 'pointer'
       })
       const coordinates = [
-        [110.85427919634378,-6.397535525223259],
+        [110.85427919634378, -6.397535525223259],
         [114.6061427746541, -8.823084235737197],
       ]
       // Create a 'LngLatBounds' with both corners at the first coordinate.
       const bounds = new mapboxgl.LngLatBounds(
-        [110.85427919634378,-6.397535525223259],
+        [110.85427919634378, -6.397535525223259],
         [114.6061427746541, -8.823084235737197]
       )
 
