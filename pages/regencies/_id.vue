@@ -2,13 +2,13 @@
   <div>
     <div style="height: 100vh" id="map-conatiner"></div>
     <img
-      class="top-left"
+      class="top-right"
       height="100px"
       src="https://i0.wp.com/www.dprd-ponorogo.go.id/wp-content/uploads/2021/10/Partai-Nasdem-Preview.png?fit=501%2C301&ssl=1"
       alt=""
       srcset=""
     />
-    <nuxt-link class="top-right" to="/">
+    <nuxt-link class="top-left" to="/">
       <img
         height="100%"
         src="http://cdn.onlinewebfonts.com/svg/img_490217.png"

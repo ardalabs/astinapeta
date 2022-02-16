@@ -52,7 +52,7 @@
         </div>
       </div>
     </div>
-    <img class="top-left" height="100px" src="https://i0.wp.com/www.dprd-ponorogo.go.id/wp-content/uploads/2021/10/Partai-Nasdem-Preview.png?fit=501%2C301&ssl=1" alt="" srcset="">
+    <img class="top-right" height="100px" src="https://i0.wp.com/www.dprd-ponorogo.go.id/wp-content/uploads/2021/10/Partai-Nasdem-Preview.png?fit=501%2C301&ssl=1" alt="" srcset="">
     
   </div>
 </template>
