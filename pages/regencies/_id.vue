@@ -77,12 +77,12 @@ export default {
         map.getCanvas().style.cursor = 'pointer'
       })
       const coordinates = [
-        [-6.397535525223259, 110.85427919634378],
+        [110.85427919634378,-6.397535525223259],
         [114.6061427746541, -8.823084235737197],
       ]
       // Create a 'LngLatBounds' with both corners at the first coordinate.
       const bounds = new mapboxgl.LngLatBounds(
-        [-6.397535525223259, 110.85427919634378],
+        [110.85427919634378,-6.397535525223259],
         [114.6061427746541, -8.823084235737197]
       )
 
