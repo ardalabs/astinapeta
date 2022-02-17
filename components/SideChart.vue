@@ -9,9 +9,9 @@
         </div>
         <div>
           <BarChart
+            class="chartStyle"
             :data="barChartData"
             :options="barChartOptions"
-            :plugins="barPlugins"
           />
         </div>
         <!-- <div class="d-flex justify-content-around">
@@ -78,9 +78,25 @@ export default {
   },
   data() {
     return {
-      barPlugins: [],
+      images: [
+        'https://i.stack.imgur.com/2RAv2.png',
+        'https://i.stack.imgur.com/Tq5DA.png',
+        'https://i.stack.imgur.com/3KRtW.png',
+        'https://i.stack.imgur.com/iLyVi.png',
+      ],
       barChartData: {
-        labels: ['NASDEM', 'GOLKAR', 'PDI', 'PBB'],
+        labels: [
+          'NASDEM',
+          'GOLKAR',
+          'PDI',
+          'GERINDRA',
+          'DEMOKRAT',
+          'PAN',
+          'PKB',
+          'PKS',
+          'HANURA',
+          'PPP',
+        ],
         datasets: [
           {
             label: 'Perloehan Suara',
@@ -89,9 +105,21 @@ export default {
               chartColors.blue,
               chartColors.yellow,
               chartColors.red,
+              chartColors.red,
+              chartColors.blue,
+              chartColors.blue,
+              chartColors.green,
+              chartColors.orange,
+              chartColors.yellow,
               chartColors.green,
             ],
             data: [
+              this.getRndInteger(0, 100),
+              this.getRndInteger(0, 100),
+              this.getRndInteger(0, 100),
+              this.getRndInteger(0, 100),
+              this.getRndInteger(0, 100),
+              this.getRndInteger(0, 100),
               this.getRndInteger(0, 100),
               this.getRndInteger(0, 100),
               this.getRndInteger(0, 100),
@@ -102,15 +130,15 @@ export default {
       },
       barChartOptions: {
         responsive: true,
-        legend: {
-          display: false,
-        },
         title: {
           display: true,
           text: 'Perolehan Suara',
         },
+        legend: {
+          display: false,
+        },
         scales: {
-          yAxes: [
+          xAxes: [
             {
               ticks: {
                 beginAtZero: true,
@@ -131,3 +159,8 @@ export default {
   },
 }
 </script>
+<style>
+.chartStyle {
+  height: '1500px';
+}
+</style>

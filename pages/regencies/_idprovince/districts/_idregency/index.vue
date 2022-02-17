@@ -89,7 +89,7 @@ export default {
         )
       })
       map.on('click', 'area-boundary', (e) => {
-        window.open('/regencies/0/districts/0/villages/' + e.features[0].properties.NAMAOBJ, 'newwindow')
+       this.$router.push('/regencies/0/districts/0/villages/' + e.features[0].properties.NAMAOBJ)
       })
 
       map.on('mousemove', 'area-boundary', (e) => {

@@ -1,9 +1,9 @@
-import { Bar } from 'vue-chartjs'
+import { HorizontalBar } from 'vue-chartjs'
 
 export default {
-  extends: Bar,
-  props: ['data', 'options','plugins'],
+  extends: HorizontalBar,
+  props: ['data', 'options'],
   mounted () {
-    this.renderChart(this.data, this.plugins, this.options)
+    this.renderChart(this.data, this.options )
   }
 }

@@ -90,7 +90,7 @@ export default {
         )
       })
       map.on('click', 'area-boundary', (e) => {
-        window.open('/regencies/32/districts/' + e.features[0].properties.KABKOTNO, 'newwindow')
+        this.$router.push('/regencies/32/districts/' + e.features[0].properties.KABKOTNO)
       })
 
       map.on('mousemove', 'area-boundary', (e) => {
