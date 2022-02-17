@@ -24,6 +24,7 @@ export default {
       paintData: {},
       prov: '',
       hover: false,
+      lastFeature:''
     }
   },
   methods: {
@@ -102,9 +103,13 @@ export default {
         this.$router.push('/regencies/' + e.features[0].properties.ID)
       })
 
-      map.on('mouseenter', 'area-boundary', (e) => {
-        this.prov = e.features[0].properties.Propinsi
-        this.hover = true
+      map.on('mousemove', 'area-boundary', (e) => {
+        const f = map.queryRenderedFeatures(e.point)[0];
+            if (f.properties.Propinsi !== this.lastFeature) {
+              this.prov = e.features[0].properties.Propinsi
+              this.hover = true
+              this.lastFeature = f.properties.Propinsi;
+            }
       })
       map.on('mouseleave', 'area-boundary', (e) => {
         this.prov = ''

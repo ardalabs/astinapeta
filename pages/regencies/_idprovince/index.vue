@@ -30,7 +30,8 @@ export default {
     return {
       paintData: {},
       hover:false,
-      prov:''
+      prov:'',
+      lastFeature:''
     }
   },
   methods: {
@@ -92,9 +93,16 @@ export default {
         window.open('/regencies/32/districts/' + e.features[0].properties.KABKOTNO, 'newwindow')
       })
 
-      map.on('mouseenter', 'area-boundary', (e) => {
-        this.prov = e.features[0].properties.KABKOT
-        this.hover = true
+      map.on('mousemove', 'area-boundary', (e) => {
+        const f = map.queryRenderedFeatures(e.point)[0];
+            if (f.properties.KABKOT !== this.lastFeature) {
+              this.hover = false
+              this.prov = e.features[0].properties.KABKOT
+              this.hover = true
+              this.lastFeature = f.properties.KABKOT;
+
+                // do something
+            }
       })
       map.on('mouseleave', 'area-boundary', (e) => {
         this.prov = ''

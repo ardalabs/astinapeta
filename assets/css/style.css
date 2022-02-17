@@ -6,6 +6,7 @@
     top: 0;
     left: 0;
     transform: translateY(90px);
+    pointer-events: none;
 }
 .top-left{
     position: fixed;
@@ -20,4 +21,5 @@
     right: 0;
     padding: 10px;
     height: 100px;
+    pointer-events: none;
 }

@@ -29,7 +29,8 @@ export default {
     return {
       paintData: {},
       hover:false,
-      prov:''
+      prov:'',
+      lastFeature:''
     }
   },
   methods: {
@@ -91,9 +92,15 @@ export default {
         window.open('/regencies/0/districts/0/villages/' + e.features[0].properties.NAMAOBJ, 'newwindow')
       })
 
-      map.on('mouseenter', 'area-boundary', (e) => {
-        this.prov = e.features[0].properties.WADMKC
-        this.hover = true
+      map.on('mousemove', 'area-boundary', (e) => {
+        const f = map.queryRenderedFeatures(e.point)[0];
+            if (f.properties.WADMKC !== this.lastFeature) {
+              this.prov = e.features[0].properties.WADMKC
+              this.hover = true
+              this.lastFeature = f.properties.WADMKC;
+
+                // do something
+            }
       })
       map.on('mouseleave', 'area-boundary', (e) => {
         this.prov = ''

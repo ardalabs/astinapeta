@@ -29,7 +29,8 @@ export default {
     return {
       paintData: {},
       hover:false,
-      prov:''
+      prov:'',
+      lastFeature:''
     }
   },
   methods: {
@@ -87,16 +88,21 @@ export default {
           firstSymbolId
         )
       })
-      map.on('mouseenter', 'area-boundary', (e) => {
-        if(e.features[0].properties.WADMKC === "KOTA"){
-          this.prov = e.features[0].properties.NAMAOBJ
-          this.hover = true
-        }
+      map.on('mousemove', 'area-boundary', (e) => {
+        const f = map.queryRenderedFeatures(e.point)[0];
+            if (f.properties.NAMOBJ !== this.lastFeature) {
+              this.prov = e.features[0].properties.NAMOBJ
+              this.hover = true
+              this.lastFeature = f.properties.NAMOBJ;
+
+                // do something
+            }
       })
       map.on('mouseleave', 'area-boundary', (e) => {
         this.prov = ''
         this.hover = false
       })
+      
       const coordinates = [
         [111.94700640803094, -7.768076305331418],
         [112.08376620243607, -7.9269329259617],
