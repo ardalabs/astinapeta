@@ -1,6 +1,7 @@
 <template>
   <div>
     <div style="height: 100vh" id="map-conatiner"></div>
+    <SideChart v-if="hover" :wilayah="prov"/>
     <img
       class="top-right"
       height="100px"
@@ -27,6 +28,8 @@ export default {
   data() {
     return {
       paintData: {},
+      hover:false,
+      prov:''
     }
   },
   methods: {
@@ -89,7 +92,12 @@ export default {
       })
 
       map.on('mouseenter', 'area-boundary', (e) => {
-        map.getCanvas().style.cursor = 'pointer'
+        this.prov = e.features[0].properties.WADMKC
+        this.hover = true
+      })
+      map.on('mouseleave', 'area-boundary', (e) => {
+        this.prov = ''
+        this.hover = false
       })
       const coordinates = [
         [111.94700640803094, -7.768076305331418],

@@ -1,11 +1,18 @@
 <template>
   <div class="legend pb-3">
     <div class="container-fluid h-100 px-0">
-      <div class="card h-100 bg-light p-3 px-5">
+      <div class="card h-100 bg-light" style="border-radius: 20px">
         <div>
           <h5 class="w-100 text-center">
             {{ wilayah }}
           </h5>
+        </div>
+        <div>
+          <BarChart
+            :data="barChartData"
+            :options="barChartOptions"
+            :plugins="barPlugins"
+          />
         </div>
         <!-- <div class="d-flex justify-content-around">
           <div class="card bg-white p-1">
@@ -54,12 +61,69 @@
   </div>
 </template>
 <script>
+import BarChart from '~/components/BarChart'
+const chartColors = {
+  red: 'rgb(255, 99, 132)',
+  orange: 'rgb(255, 159, 64)',
+  yellow: 'rgb(255, 205, 86)',
+  green: 'rgb(75, 192, 192)',
+  blue: 'rgb(54, 162, 235)',
+  purple: 'rgb(153, 102, 255)',
+  grey: 'rgb(201, 203, 207)',
+}
 export default {
   props: {
-    data: Object,
+    data: {},
     wilayah: String,
   },
-
+  data() {
+    return {
+      barPlugins: [],
+      barChartData: {
+        labels: ['NASDEM', 'GOLKAR', 'PDI', 'PBB'],
+        datasets: [
+          {
+            label: 'Perloehan Suara',
+            // backgroundColor: ["red", "orange", "yellow"],
+            backgroundColor: [
+              chartColors.blue,
+              chartColors.yellow,
+              chartColors.red,
+              chartColors.green,
+            ],
+            data: [
+              this.getRndInteger(0, 100),
+              this.getRndInteger(0, 100),
+              this.getRndInteger(0, 100),
+              this.getRndInteger(0, 100),
+            ],
+          },
+        ],
+      },
+      barChartOptions: {
+        responsive: true,
+        legend: {
+          display: false,
+        },
+        title: {
+          display: true,
+          text: 'Perolehan Suara',
+        },
+        scales: {
+          yAxes: [
+            {
+              ticks: {
+                beginAtZero: true,
+              },
+            },
+          ],
+        },
+      },
+    }
+  },
+  components: {
+    BarChart,
+  },
   methods: {
     getRndInteger(min, max) {
       return Math.floor(Math.random() * (max - min)) + min
