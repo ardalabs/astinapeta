@@ -1,59 +1,16 @@
 <template>
   <div>
     <div style="height: 100vh" id="map-conatiner"></div>
-    <div v-if="hover" class="legend pb-3">
-      <div class="container-fluid">
-        <div class="card bg-light p-3 px-5">
-          <div>
-            {{ prov }}
-          </div>
-          <div class="d-flex justify-content-around">
-            <div class="card bg-white p-1">
-              <div class="card-body">
-                <img
-                  style="height: 25px; width: auto"
-                  src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Partai_NasDem.svg/640px-Partai_NasDem.svg.png"
-                />
-                <strong>{{ getRndInteger(10, 50) }}%</strong>
-                ({{ getRndInteger(10, 100) }})
-              </div>
-            </div>
-            <div class="card bg-white p-1">
-              <div class="card-body">
-                <img
-                  style="height: 25px; width: auto"
-                  src="https://awsimages.detik.net.id/community/media/visual/2019/04/15/0ed3f774-4eb9-4275-b7f2-9b514f9676e9_11.jpeg?w=1200"
-                />
-                <strong>{{ getRndInteger(10, 50) }}%</strong>
-                ({{ getRndInteger(10, 100) }})
-              </div>
-            </div>
-            <div class="card bg-white p-1">
-              <div class="card-body">
-                <img
-                  style="height: 25px; width: auto"
-                  src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Logo_of_the_Democratic_Party_%28Indonesia%29.svg/1200px-Logo_of_the_Democratic_Party_%28Indonesia%29.svg.png"
-                />
-                <strong>{{ getRndInteger(10, 50) }}%</strong>
-                ({{ getRndInteger(10, 100) }})
-              </div>
-            </div>
-            <div class="card bg-white p-1">
-              <div class="card-body">
-                <img
-                  style="height: 25px; width: auto"
-                  src="https://kilasjatim.com/wp-content/uploads/2019/01/Screenshot_2019-01-31-11-15-11-814_com.android.chrome.jpg"
-                />
-                <strong>{{ getRndInteger(10, 50) }}%</strong>
-                ({{ getRndInteger(10, 100) }})
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <SideChart v-if="hover" :wilayah="prov"/>
     <img class="top-right" height="100px" src="https://i0.wp.com/www.dprd-ponorogo.go.id/wp-content/uploads/2021/10/Partai-Nasdem-Preview.png?fit=501%2C301&ssl=1" alt="" srcset="">
-    
+    <nuxt-link class="top-left" to="/regencies/0">
+      <img
+        height="100%"
+        src="http://cdn.onlinewebfonts.com/svg/img_490217.png"
+        alt=""
+        srcset=""
+      />
+    </nuxt-link>
   </div>
 </template>
 
