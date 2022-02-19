@@ -114,9 +114,7 @@ export default ({ app }, inject) => {
         bounds.extend(coord)
       }
 
-      map.fitBounds(bounds, {
-        padding: 20,
-      })
+      map.fitBounds(bounds)
     })
     return map;
   })

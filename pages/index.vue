@@ -32,19 +32,19 @@ export default {
     getMap() {
       const map = this.$mapgl(geoJson, this.paintData)
       map.on('click', 'area-boundary', (e) => {
-        const idwil = this.search(e.features[0].properties.Propinsi, masterprov)
+        const idwil = this.search(e.features[0].properties.province, masterprov)
         this.$router.push('/regencies/' + idwil.id)
       })
 
       map.on('mousemove', 'area-boundary', (e) => {
         const f = map.queryRenderedFeatures(e.point)[0]
-        if (f.properties.Propinsi !== this.lastFeature) {
-          if (this.prov !== e.features[0].properties.Propinsi) {
+        if (f.properties.province !== this.lastFeature) {
+          if (this.prov !== e.features[0].properties.province) {
             this.hover = false
           }
-          this.prov = e.features[0].properties.Propinsi
+          this.prov = e.features[0].properties.province
           const provinfo = this.search(
-            e.features[0].properties.Propinsi,
+            e.features[0].properties.province,
             masterprov
           )
           if (provinfo) {
@@ -62,7 +62,7 @@ export default {
           }
 
           this.hover = true
-          this.lastFeature = f.properties.Propinsi
+          this.lastFeature = f.properties.province
         }
       })
       map.on('mouseleave', 'area-boundary', (e) => {
@@ -76,12 +76,12 @@ export default {
     },
     generatePaint() {
       this.paintData = {
-        'fill-color': ['match', ['get', 'Propinsi']],
+        'fill-color': ['match', ['get', 'province']],
         'fill-opacity': 0.4,
       }
       geoJson.features.forEach((element) => {
-        // console.log('elprop',element.properties.Propinsi);
-        const idwil = this.search(element.properties.Propinsi, masterprov)
+        // console.log('elprop',element.properties.province);
+        const idwil = this.search(element.properties.province, masterprov)
         if (idwil) {
           let highest = 0;
           let highestkey = '';
@@ -95,13 +95,13 @@ export default {
               }
             }
           })
-          if(highestkey && element.properties.Propinsi){
-            this.paintData['fill-color'].push(element.properties.Propinsi)
+          if(highestkey && element.properties.province){
+            this.paintData['fill-color'].push(element.properties.province)
             this.paintData['fill-color'].push(party[highestkey].warna)
           }
         }
       })
-      this.paintData['fill-color'].push('#0000ff')
+      this.paintData['fill-color'].push('#000000')
       console.log(this.paintData)
     },
     search(nameKey, myArray) {

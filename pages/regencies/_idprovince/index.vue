@@ -56,7 +56,7 @@ export default {
       const map = this.$mapgl(this.geoJson, this.paintData)
       map.on('click', 'area-boundary', (e) => {
         this.$router.push(
-          '/regencies/32/districts/' + e.features[0].properties.KABKOTNO
+          '/regencies/'+this.$route.params.idprovince+'/districts/' + e.features[0].properties.id_kabkota
         )
       })
       map.on('mousemove', 'area-boundary', (e) => {
