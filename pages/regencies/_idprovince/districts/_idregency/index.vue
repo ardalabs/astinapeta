@@ -1,7 +1,7 @@
 <template>
   <div>
     <div style="height: 100vh" id="map-conatiner"></div>
-    <SideChart v-if="hover" :wilayah="prov"/>
+    <SideChart v-if="hover" :wilayah="prov" />
     <img
       class="top-right"
       height="100px"
@@ -28,79 +28,37 @@ export default {
   data() {
     return {
       paintData: {},
-      hover:false,
-      prov:'',
-      lastFeature:''
+      hover: false,
+      prov: '',
+      lastFeature: '',
     }
   },
   methods: {
-    getMap() {
-      mapboxgl.accessToken =
-        'pk.eyJ1IjoiZmFyaXozMTMiLCJhIjoiY2t6cDE4aXB5MjBxMDJvbnh6cTY5dHhzciJ9.mgc1iru7ABp6eaFTEfQQ_Q'
-      // eslint-disable-next-line no-unused-vars
-      const map = new mapboxgl.Map({
-        container: 'map-conatiner',
-        style: 'mapbox://styles/mapbox/outdoors-v11',
-        center: [116.825264, -1.26916],
-        zoom: 3,
-      })
-      map.on('load', () => {
-        const layers = map.getStyle().layers
-        let firstSymbolId
-        for (const layer of layers) {
-          if (layer.type === 'symbol') {
-            firstSymbolId = layer.id
-            break
-          }
-        }
-
-        console.log(kecJson)
-        map.addSource('area-geo', {
-          type: 'geojson',
-          data: kecJson,
+    async getGeoData() {
+      await this.$axios
+        .get('/v1/geo/featuredmap/' + this.$route.params.idprovince + '/1')
+        .then((res) => {
+          this.geoJson = res.data.data
         })
-
-        map.addLayer(
-          {
-            id: 'area-boundary',
-            type: 'fill',
-            source: 'area-geo',
-            paint: this.paintData,
-            filter: ['==', '$type', 'Polygon'],
-          },
-          firstSymbolId
-        )
-        map.addLayer(
-          {
-            id: 'route',
-            type: 'line',
-            source: 'area-geo',
-            layout: {
-              'line-join': 'round',
-              'line-cap': 'round',
-            },
-            paint: {
-              'line-color': '#000000',
-              'line-width': 1.5,
-              'line-opacity': 0.5,
-            },
-          },
-          firstSymbolId
-        )
-      })
+    },
+    getMap() {
+      const map = this.$mapgl(this.geoJson, this.paintData)
       map.on('click', 'area-boundary', (e) => {
-       this.$router.push('/regencies/0/districts/0/villages/' + e.features[0].properties.NAMAOBJ)
+        this.$router.push(
+          '/regencies/0/districts/0/villages/' +
+            e.features[0].properties.NAMAOBJ
+        )
       })
 
       map.on('mousemove', 'area-boundary', (e) => {
-        const f = map.queryRenderedFeatures(e.point)[0];
-            if (f.properties.WADMKC !== this.lastFeature) {
-              this.prov = e.features[0].properties.WADMKC
-              this.hover = true
-              this.lastFeature = f.properties.WADMKC;
+        const f = map.queryRenderedFeatures(e.point)[0]
+        if (f.properties.WADMKC !== this.lastFeature) {
+          this.prov = e.features[0].properties.WADMKC
+          this.hover = true
+          this.lastFeature = f.properties.WADMKC
 
-                // do something
-            }
+          // do something
+        }
       })
       map.on('mouseleave', 'area-boundary', (e) => {
         this.prov = ''

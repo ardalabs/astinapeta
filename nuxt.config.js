@@ -44,7 +44,7 @@ export default {
     proxy: true,
   },
   proxy: {
-    '/v1/': 'http://localhost:6070',
+    '/v1/': 'https://majapahit.ardalabs.io/hayamwuruk/election',
   },
 
   // PWA module configuration: https://go.nuxtjs.dev/pwa

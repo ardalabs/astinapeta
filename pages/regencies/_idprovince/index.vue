@@ -1,7 +1,7 @@
 <template>
   <div>
     <div style="height: 100vh" id="map-conatiner"></div>
-    <SideChart v-if="hover" :wilayah="prov"/>
+    <SideChart v-if="hover" :wilayah="prov" :dataChart="dataChart" />
 
     <img
       class="top-right"
@@ -22,109 +22,69 @@
 </template>
 
 <script>
-import mapboxgl from 'mapbox-gl/dist/mapbox-gl.js'
-import { kotaJson } from '../../kotaJson'
+import {party} from '../../party'
 import 'mapbox-gl/dist/mapbox-gl.css'
 export default {
   data() {
     return {
       paintData: {},
-      hover:false,
-      prov:'',
-      lastFeature:''
+      hover: false,
+      prov: '',
+      lastFeature: '',
+      geoJson: {},
+      dprd: {},
+      dataChart:[]
     }
   },
   methods: {
-    getMap() {
-      mapboxgl.accessToken =
-        'pk.eyJ1IjoiZmFyaXozMTMiLCJhIjoiY2t6cDE4aXB5MjBxMDJvbnh6cTY5dHhzciJ9.mgc1iru7ABp6eaFTEfQQ_Q'
-      // eslint-disable-next-line no-unused-vars
-      const map = new mapboxgl.Map({
-        container: 'map-conatiner',
-        style: 'mapbox://styles/mapbox/outdoors-v11',
-        center: [116.825264, -1.26916],
-        zoom: 3,
-      })
-      map.on('load', () => {
-        const layers = map.getStyle().layers
-        let firstSymbolId
-        for (const layer of layers) {
-          if (layer.type === 'symbol') {
-            firstSymbolId = layer.id
-            break
-          }
-        }
-
-        console.log(kotaJson)
-        map.addSource('area-geo', {
-          type: 'geojson',
-          data: kotaJson,
+    async getGeoData() {
+      await this.$axios
+        .get('/v1/geo/featuredmap/' + this.$route.params.idprovince + '/1')
+        .then((res) => {
+          this.geoJson = res.data.data
         })
-
-        map.addLayer(
-          {
-            id: 'area-boundary',
-            type: 'fill',
-            source: 'area-geo',
-            paint: this.paintData,
-            filter: ['==', '$type', 'Polygon'],
-          },
-          firstSymbolId
-        )
-        map.addLayer(
-          {
-            id: 'route',
-            type: 'line',
-            source: 'area-geo',
-            layout: {
-              'line-join': 'round',
-              'line-cap': 'round',
-            },
-            paint: {
-              'line-color': '#000000',
-              'line-width': 1.5,
-              'line-opacity': 0.5,
-            },
-          },
-          firstSymbolId
-        )
-      })
+    },
+    async getPartyData() {
+      await this.$axios
+        .get('/v1/result/province/' + this.$route.params.idprovince)
+        .then((res) => {
+          this.dprd = res.data.data
+          console.log(this.dprd);
+        })
+    },
+    getMap() {
+      const map = this.$mapgl(this.geoJson, this.paintData)
       map.on('click', 'area-boundary', (e) => {
-        this.$router.push('/regencies/32/districts/' + e.features[0].properties.KABKOTNO)
+        this.$router.push(
+          '/regencies/32/districts/' + e.features[0].properties.KABKOTNO
+        )
       })
-
       map.on('mousemove', 'area-boundary', (e) => {
-        const f = map.queryRenderedFeatures(e.point)[0];
-            if (f.properties.KABKOT !== this.lastFeature) {
-              this.hover = false
-              this.prov = e.features[0].properties.KABKOT
-              this.hover = true
-              this.lastFeature = f.properties.KABKOT;
+        const f = map.queryRenderedFeatures(e.point)[0]
+        if (f.properties.id_kabkota !== this.lastFeature) {
+          if (this.prov !== e.features[0].properties.id_kabkota) {
+            this.hover = false
+          }
+          this.prov = e.features[0].properties.nm_kabkota
+            this.dataChart = []
+            if (this.dprd.table[e.features[0].properties.id_kabkota]) {
+              for (let index = 0; index < 20; index++) {
+                if (this.dprd.table[e.features[0].properties.id_kabkota][index + 1]) {
+                  this.dataChart.push(this.dprd.table[e.features[0].properties.id_kabkota][index + 1])
+                } else {
+                  this.dataChart.push(0)
+                }
+              }
+            console.log(this.dataChart)
+          }
 
-                // do something
-            }
+          this.hover = true
+          this.lastFeature = f.properties.id_kabkota
+        }
       })
       map.on('mouseleave', 'area-boundary', (e) => {
         this.prov = ''
         this.hover = false
-      })
-      const coordinates = [
-        [110.85427919634378, -6.397535525223259],
-        [114.6061427746541, -8.823084235737197],
-      ]
-      // Create a 'LngLatBounds' with both corners at the first coordinate.
-      const bounds = new mapboxgl.LngLatBounds(
-        [110.85427919634378, -6.397535525223259],
-        [114.6061427746541, -8.823084235737197]
-      )
-
-      // Extend the 'LngLatBounds' to include every coordinate in the bounds result.
-      for (const coord of coordinates) {
-        bounds.extend(coord)
-      }
-
-      map.fitBounds(bounds, {
-        padding: 20,
       })
     },
     getRndInteger(min, max) {
@@ -132,21 +92,37 @@ export default {
     },
     generatePaint() {
       this.paintData = {
-        'fill-color': ['match', ['get', 'KABKOTNO']],
+        'fill-color': ['match', ['get', 'id_kabkota']],
         'fill-opacity': 0.4,
       }
-      kotaJson.features.forEach((element) => {
-        const randColor = ['#fff000', '#003cff', '#f10b00', '#00ff11']
-        this.paintData['fill-color'].push(element.properties.KABKOTNO)
-        this.paintData['fill-color'].push(randColor[this.getRndInteger(0, 4)])
+      console.log(this.geoJson.features);
+      this.geoJson.features.forEach((element) => {
+        let highest = 0
+        let highestkey = ''
+        Object.keys(this.dprd.table[element.properties.id_kabkota]).forEach((key) => {
+          if (key !== 'persen') {
+            if (highest < this.dprd.table[element.properties.id_kabkota][key]) {
+              highest = this.dprd.table[element.properties.id_kabkota][key]
+              highestkey = key
+            }
+          }
+        })
+        this.paintData['fill-color'].push(element.properties.id_kabkota)
+        this.paintData['fill-color'].push(party[highestkey].warna)
       })
       this.paintData['fill-color'].push('#0000ff')
       console.log(this.paintData)
     },
   },
   mounted() {
-    this.generatePaint()
-    this.getMap()
+    this.getPartyData().then(() => {
+      this.getGeoData().then(()=>{
+        this.generatePaint()
+        this.getMap()
+      })
+    })
+    // this.generatePaint()
+    // this.getMap()
   },
 }
 </script>

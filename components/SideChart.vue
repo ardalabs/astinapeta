@@ -249,6 +249,7 @@ export default {
     },
   },
   mounted() {
+    console.log('dc',this.dataChart);
     this.barChartData.datasets[0].backgroundColor = []
     this.barChartData.labels = []
     this.barChartData.datasets[0].data = []
@@ -256,7 +257,6 @@ export default {
       this.barChartData.labels.push(element.nama)
       this.barChartData.datasets[0].backgroundColor.push(element.warna)
       this.barChartData.datasets[0].data = this.dataChart;
-      console.log('bar',this.barChartData.data);
     })
     this.dataReady=true
   },
