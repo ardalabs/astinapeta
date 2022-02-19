@@ -1,22 +1,22 @@
 <template>
   <div>
     <div style="height: 100vh" id="map-conatiner"></div>
-    <SideChart v-if="hover" :wilayah="prov"/>
-    <img class="top-right" height="100px" src="https://i0.wp.com/www.dprd-ponorogo.go.id/wp-content/uploads/2021/10/Partai-Nasdem-Preview.png?fit=501%2C301&ssl=1" alt="" srcset="">
-    <nuxt-link class="top-left" to="/regencies/0">
-      <img
-        height="100%"
-        src="http://cdn.onlinewebfonts.com/svg/img_490217.png"
-        alt=""
-        srcset=""
-      />
-    </nuxt-link>
+    <SideChart v-if="hover" :wilayah="prov" :dataChart="dataChart" />
+    <img
+      class="top-right"
+      height="100px"
+      src="https://i0.wp.com/www.dprd-ponorogo.go.id/wp-content/uploads/2021/10/Partai-Nasdem-Preview.png?fit=501%2C301&ssl=1"
+      alt=""
+      srcset=""
+    />
   </div>
 </template>
 
 <script>
 import mapboxgl from 'mapbox-gl/dist/mapbox-gl.js'
 import { geoJson } from './geoJson'
+import { dprri } from './dprri'
+import { masterprov } from './masterprov'
 import 'mapbox-gl/dist/mapbox-gl.css'
 export default {
   data() {
@@ -24,7 +24,8 @@ export default {
       paintData: {},
       prov: '',
       hover: false,
-      lastFeature:''
+      lastFeature: '',
+      dataChart: [],
     }
   },
   methods: {
@@ -104,15 +105,37 @@ export default {
       })
 
       map.on('mousemove', 'area-boundary', (e) => {
-        const f = map.queryRenderedFeatures(e.point)[0];
-            if (f.properties.Propinsi !== this.lastFeature) {
-              this.prov = e.features[0].properties.Propinsi
-              this.hover = true
-              this.lastFeature = f.properties.Propinsi;
+        const f = map.queryRenderedFeatures(e.point)[0]
+        if (f.properties.Propinsi !== this.lastFeature) {
+          if(this.prov !== e.features[0].properties.Propinsi){
+            this.hover = false
+          }
+          this.prov = e.features[0].properties.Propinsi
+          const provinfo = this.search(
+            e.features[0].properties.Propinsi,
+            masterprov
+          )
+          if (provinfo) {
+            this.dataChart = []
+            if (dprri.table[provinfo.id]) {
+              for (let index = 0; index < 20; index++) {
+                if (dprri.table[provinfo.id][index+1]) {
+                  this.dataChart.push(dprri.table[provinfo.id][index+1])
+                } else {
+                  this.dataChart.push(0)
+                }
+              }
             }
+            console.log(this.dataChart)
+          }
+          
+          this.hover = true
+          this.lastFeature = f.properties.Propinsi
+        }
       })
       map.on('mouseleave', 'area-boundary', (e) => {
         this.prov = ''
+        this.dataChart = {}
         this.hover = false
       })
     },
@@ -131,6 +154,13 @@ export default {
       })
       this.paintData['fill-color'].push('#0000ff')
       console.log(this.paintData)
+    },
+    search(nameKey, myArray) {
+      for (let i = 0; i < myArray.length; i++) {
+        if (myArray[i].namaWilayah === nameKey) {
+          return myArray[i]
+        }
+      }
     },
   },
   mounted() {

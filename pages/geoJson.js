@@ -5465,7 +5465,7 @@ export const geoJson = {
         "properties": {
           "ID": 7,
           "kode": 36,
-          "Propinsi": "PROBANTEN",
+          "Propinsi": "BANTEN",
           "SUMBER": "Peta Dasar BAKOSURTANAL Skala 1 : 250.000"
         }
       },
