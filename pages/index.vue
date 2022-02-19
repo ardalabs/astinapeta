@@ -16,6 +16,7 @@
 import mapboxgl from 'mapbox-gl/dist/mapbox-gl.js'
 import { geoJson } from './geoJson'
 import { dprri } from './dprri'
+import { party } from './party'
 import { masterprov } from './masterprov'
 import 'mapbox-gl/dist/mapbox-gl.css'
 export default {
@@ -107,7 +108,7 @@ export default {
       map.on('mousemove', 'area-boundary', (e) => {
         const f = map.queryRenderedFeatures(e.point)[0]
         if (f.properties.Propinsi !== this.lastFeature) {
-          if(this.prov !== e.features[0].properties.Propinsi){
+          if (this.prov !== e.features[0].properties.Propinsi) {
             this.hover = false
           }
           this.prov = e.features[0].properties.Propinsi
@@ -119,8 +120,8 @@ export default {
             this.dataChart = []
             if (dprri.table[provinfo.id]) {
               for (let index = 0; index < 20; index++) {
-                if (dprri.table[provinfo.id][index+1]) {
-                  this.dataChart.push(dprri.table[provinfo.id][index+1])
+                if (dprri.table[provinfo.id][index + 1]) {
+                  this.dataChart.push(dprri.table[provinfo.id][index + 1])
                 } else {
                   this.dataChart.push(0)
                 }
@@ -128,7 +129,7 @@ export default {
             }
             console.log(this.dataChart)
           }
-          
+
           this.hover = true
           this.lastFeature = f.properties.Propinsi
         }
@@ -148,9 +149,26 @@ export default {
         'fill-opacity': 0.4,
       }
       geoJson.features.forEach((element) => {
-        const randColor = ['#fff000', '#003cff', '#f10b00', '#00ff11']
-        this.paintData['fill-color'].push(element.properties.Propinsi)
-        this.paintData['fill-color'].push(randColor[this.getRndInteger(0, 4)])
+        // console.log('elprop',element.properties.Propinsi);
+        const idwil = this.search(element.properties.Propinsi, masterprov)
+        if (idwil) {
+          let highest = 0;
+          let highestkey = '';
+          // console.log('iid',idwil.id);
+          // console.log('idwil',dprri.table[idwil.id]);
+          Object.keys(dprri.table[idwil.id]).forEach((key) => {
+            if(key!=='persen'){
+              if(highest<dprri.table[idwil.id][key]){
+                highest = dprri.table[idwil.id][key]
+                highestkey = key
+              }
+            }
+          })
+          if(highestkey && element.properties.Propinsi){
+            this.paintData['fill-color'].push(element.properties.Propinsi)
+            this.paintData['fill-color'].push(party[highestkey].warna)
+          }
+        }
       })
       this.paintData['fill-color'].push('#0000ff')
       console.log(this.paintData)
