@@ -1,7 +1,7 @@
 <template>
   <div>
     <div style="height: 100vh" id="map-conatiner"></div>
-    <SideChart v-if="hover" :wilayah="prov" />
+    <SideChart v-if="hover" :wilayah="prov"/>
 
     <img
       class="top-right"
@@ -22,75 +22,131 @@
 </template>
 
 <script>
+import mapboxgl from 'mapbox-gl/dist/mapbox-gl.js'
+import { kotaJson } from '../../kotaJson'
 import 'mapbox-gl/dist/mapbox-gl.css'
 export default {
   data() {
     return {
       paintData: {},
-      hover: false,
-      prov: '',
-      lastFeature: '',
-      geoJson:{
-        type: 'FeatureCollection',
-        features: [],
-      }
+      hover:false,
+      prov:'',
+      lastFeature:''
     }
   },
   methods: {
-    async getData() {
-      await this.$axios.get('/v1/geo/province/'+this.$route.params.idprovince).then((res) => {
-        this.geoJson.features = res.data.data
-        console.log('geo',this.geoJson);
-      })
-    },
     getMap() {
-      const map = this.$mapgl(this.geoJson, this.paintData)
-      map.on('click', 'area-boundary', (e) => {
-        this.$router.push(
-          '/regencies/32/districts/' + e.features[0].properties._id
+      mapboxgl.accessToken =
+        'pk.eyJ1IjoiZmFyaXozMTMiLCJhIjoiY2t6cDE4aXB5MjBxMDJvbnh6cTY5dHhzciJ9.mgc1iru7ABp6eaFTEfQQ_Q'
+      // eslint-disable-next-line no-unused-vars
+      const map = new mapboxgl.Map({
+        container: 'map-conatiner',
+        style: 'mapbox://styles/mapbox/outdoors-v11',
+        center: [116.825264, -1.26916],
+        zoom: 3,
+      })
+      map.on('load', () => {
+        const layers = map.getStyle().layers
+        let firstSymbolId
+        for (const layer of layers) {
+          if (layer.type === 'symbol') {
+            firstSymbolId = layer.id
+            break
+          }
+        }
+
+        console.log(kotaJson)
+        map.addSource('area-geo', {
+          type: 'geojson',
+          data: kotaJson,
+        })
+
+        map.addLayer(
+          {
+            id: 'area-boundary',
+            type: 'fill',
+            source: 'area-geo',
+            paint: this.paintData,
+            filter: ['==', '$type', 'Polygon'],
+          },
+          firstSymbolId
         )
+        map.addLayer(
+          {
+            id: 'route',
+            type: 'line',
+            source: 'area-geo',
+            layout: {
+              'line-join': 'round',
+              'line-cap': 'round',
+            },
+            paint: {
+              'line-color': '#000000',
+              'line-width': 1.5,
+              'line-opacity': 0.5,
+            },
+          },
+          firstSymbolId
+        )
+      })
+      map.on('click', 'area-boundary', (e) => {
+        this.$router.push('/regencies/32/districts/' + e.features[0].properties.KABKOTNO)
       })
 
       map.on('mousemove', 'area-boundary', (e) => {
-        const f = map.queryRenderedFeatures(e.point)[0]
-        if (f.properties.RegenciesName !== this.lastFeature) {
-          this.hover = false
-          this.prov = e.features[0].properties.RegenciesName
-          this.hover = true
-          this.lastFeature = f.properties.RegenciesName
+        const f = map.queryRenderedFeatures(e.point)[0];
+            if (f.properties.KABKOT !== this.lastFeature) {
+              this.hover = false
+              this.prov = e.features[0].properties.KABKOT
+              this.hover = true
+              this.lastFeature = f.properties.KABKOT;
 
-          // do something
-        }
+                // do something
+            }
       })
       map.on('mouseleave', 'area-boundary', (e) => {
         this.prov = ''
         this.hover = false
       })
-     
-      
+      const coordinates = [
+        [110.85427919634378, -6.397535525223259],
+        [114.6061427746541, -8.823084235737197],
+      ]
+      // Create a 'LngLatBounds' with both corners at the first coordinate.
+      const bounds = new mapboxgl.LngLatBounds(
+        [110.85427919634378, -6.397535525223259],
+        [114.6061427746541, -8.823084235737197]
+      )
+
+      // Extend the 'LngLatBounds' to include every coordinate in the bounds result.
+      for (const coord of coordinates) {
+        bounds.extend(coord)
+      }
+
+      map.fitBounds(bounds, {
+        padding: 20,
+      })
     },
     getRndInteger(min, max) {
       return Math.floor(Math.random() * (max - min)) + min
     },
     generatePaint() {
       this.paintData = {
-        'fill-color': ['match', ['get', 'Regencies']],
+        'fill-color': ['match', ['get', 'KABKOTNO']],
         'fill-opacity': 0.4,
       }
-      this.geoJson.features.forEach((element) => {
+      kotaJson.features.forEach((element) => {
         const randColor = ['#fff000', '#003cff', '#f10b00', '#00ff11']
-        this.paintData['fill-color'].push(element.properties.Regencies)
+        this.paintData['fill-color'].push(element.properties.KABKOTNO)
         this.paintData['fill-color'].push(randColor[this.getRndInteger(0, 4)])
       })
       this.paintData['fill-color'].push('#0000ff')
-      console.log('paintData',this.paintData)
+      console.log(this.paintData)
     },
   },
   mounted() {
-    this.getData().then(()=>{
-      this.generatePaint()
-      this.getMap()
-    })
+    this.generatePaint()
+    this.getMap()
   },
 }
 </script>

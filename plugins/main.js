@@ -3,51 +3,6 @@ import mapboxgl from 'mapbox-gl/dist/mapbox-gl.js'
 export default ({ app }, inject) => {
   // Inject $hello(msg) in Vue, context and store.
   inject('mapgl', (geoJson,paintData) => {
-    let xMax = 0;
-    let yMax = 0;
-    let xMin = 180;
-    let yMin = 90;
-    const getCorner = (geojson) => {
-      console.log('gj',geojson);
-      geojson.features.forEach(gj => {
-        if(gj.geometry){
-          if(gj.geometry.type==="Polygon"){
-            gj.geometry.coordinates.forEach(gjc =>{
-              gjc.forEach(gjcp => {
-                if(gjcp[0]>xMax){
-                  xMax=gjcp[0]
-                }if(gjcp[1]>yMax){
-                  yMax=gjcp[1]
-                }if(gjcp[0]<xMin){
-                  xMin=gjcp[0]
-                }if(gjcp[1]<yMin){
-                  yMin=gjcp[1]
-                }
-              })
-            })
-          }else{
-            gj.geometry.coordinates.forEach(gjc =>{
-              gjc.forEach(gjcp => {
-                gjcp.forEach(gjcpp => {
-                  if(gjcpp[0]>xMax){
-                    xMax=gjcpp[0]
-                  }if(gjcp[1]>yMax){
-                    yMax=gjcpp[1]
-                  }if(gjcpp[0]<xMin){
-                    xMin=gjcpp[0]
-                  }if(gjcpp[1]<yMin){
-                    yMin=gjcpp[1]
-                  }
-                })
-              })
-            })
-          }
-        }
-      });
-      console.log(xMax,yMax);
-      console.log(xMin,yMin);
-    }
-    getCorner(geoJson);
     mapboxgl.accessToken =
       'pk.eyJ1IjoiZmFyaXozMTMiLCJhIjoiY2t6cDE4aXB5MjBxMDJvbnh6cTY5dHhzciJ9.mgc1iru7ABp6eaFTEfQQ_Q'
     // eslint-disable-next-line no-unused-vars
@@ -103,11 +58,11 @@ export default ({ app }, inject) => {
       )
 
       const coordinates = [
-        [xMin,yMax],
-        [xMax, yMin],
+        [95.0, 6.0],
+        [141.0, -11.0],
       ]
       // Create a 'LngLatBounds' with both corners at the first coordinate.
-      const bounds = new mapboxgl.LngLatBounds(coordinates)
+      const bounds = new mapboxgl.LngLatBounds([95.0, 6.0], [141.0, -11.0])
 
       // Extend the 'LngLatBounds' to include every coordinate in the bounds result.
       for (const coord of coordinates) {
