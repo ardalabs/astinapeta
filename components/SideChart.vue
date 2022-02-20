@@ -52,7 +52,6 @@ export default {
         datasets: [
           {
             label: 'Perloehan Suara',
-            // backgroundColor: ["red", "orange", "yellow"],
             backgroundColor: [],
             data: [],
           },
@@ -97,6 +96,9 @@ export default {
         this.barChartData.datasets[0].backgroundColor.push(party[key].warna)
         this.barChartData.datasets[0].data = this.dataChart
       })
+      this.barChartData.datasets[0].backgroundColor.splice(14,4)
+      this.barChartData.labels.splice(14,4)
+      this.barChartData.datasets[0].data.splice(14,4)
       this.dataReady = true
     },
   },

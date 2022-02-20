@@ -1,6 +1,6 @@
 .legend{
     position: fixed;
-    width: 23vw;
+    min-width: 23vw;
     padding-left: 15px;
     bottom: 0;
     left: 0;

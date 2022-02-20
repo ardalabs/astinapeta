@@ -1,5 +1,6 @@
 <template>
   <div>
+    <Loading v-if="loading" />
     <div style="height: 100vh" id="map-conatiner"></div>
     <SideChart v-if="hover" :wilayah="prov" :dataChart="dataChart" />
     <img
@@ -26,6 +27,7 @@ export default {
       hover: false,
       lastFeature: '',
       dataChart: [],
+      loading:true
     }
   },
   methods: {
@@ -111,6 +113,7 @@ export default {
   mounted() {
     this.generatePaint()
     this.getMap()
+    this.loading = false
   },
 }
 </script>

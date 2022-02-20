@@ -2,7 +2,7 @@
   <div>
     <div style="height: 100vh" id="map-conatiner"></div>
     <SideChart v-if="hover" :wilayah="prov" :dataChart="dataChart" />
-
+    <Loading v-if="loading" />
     <img
       class="top-right"
       height="100px"
@@ -33,7 +33,8 @@ export default {
       lastFeature: '',
       geoJson: {},
       dprd: {},
-      dataChart:[]
+      dataChart:[],
+      loading:true
     }
   },
   methods: {
@@ -120,6 +121,7 @@ export default {
       this.getGeoData().then(()=>{
         this.generatePaint()
         this.getMap()
+        this.loading = false
       })
     })
     // this.generatePaint()
