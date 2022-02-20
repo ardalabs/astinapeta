@@ -13,6 +13,7 @@
             class="chartStyle"
             :data="barChartData"
             :options="barChartOptions"
+            :handler="handler"
           />
         </div>
       </div>
@@ -20,7 +21,7 @@
   </div>
 </template>
 <script>
-import {party} from '../pages/party'
+import { party } from '../pages/party'
 import BarChart from '~/components/BarChart'
 // const chartColors = {
 //   red: 'rgb(255, 99, 132)',
@@ -39,6 +40,7 @@ export default {
   },
   data() {
     return {
+      handler: false,
       images: [
         'https://i.stack.imgur.com/2RAv2.png',
         'https://i.stack.imgur.com/Tq5DA.png',
@@ -51,8 +53,7 @@ export default {
           {
             label: 'Perloehan Suara',
             // backgroundColor: ["red", "orange", "yellow"],
-            backgroundColor: [
-            ],
+            backgroundColor: [],
             data: [],
           },
         ],
@@ -86,19 +87,28 @@ export default {
     getRndInteger(min, max) {
       return Math.floor(Math.random() * (max - min)) + min
     },
+    getData() {
+      this.dataReady = false
+      this.barChartData.datasets[0].backgroundColor = []
+      this.barChartData.labels = []
+      this.barChartData.datasets[0].data = []
+      Object.keys(party).forEach((key) => {
+        this.barChartData.labels.push(party[key].nama)
+        this.barChartData.datasets[0].backgroundColor.push(party[key].warna)
+        this.barChartData.datasets[0].data = this.dataChart
+      })
+      this.dataReady = true
+    },
   },
   mounted() {
-    console.log('dc',this.dataChart);
-    this.barChartData.datasets[0].backgroundColor = []
-    this.barChartData.labels = []
-    this.barChartData.datasets[0].data = []
-    Object.keys(party).forEach((key) => {
-      this.barChartData.labels.push(party[key].nama)
-      this.barChartData.datasets[0].backgroundColor.push(party[key].warna)
-      this.barChartData.datasets[0].data = this.dataChart;
-    })
-    this.dataReady=true
+    this.getData()
   },
+  watch: {
+    wilayah() {
+      this.getData()
+      this.handler = !this.handler
+    }
+  }
 }
 </script>
 <style>

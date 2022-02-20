@@ -5,7 +5,7 @@
     <img
       class="top-right"
       height="100px"
-      src="https://i0.wp.com/www.dprd-ponorogo.go.id/wp-content/uploads/2021/10/Partai-Nasdem-Preview.png?fit=501%2C301&ssl=1"
+      src="~/assets/img/logo.png"
       alt=""
       srcset=""
     />
