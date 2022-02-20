@@ -93,7 +93,7 @@ export default {
     generatePaint() {
       this.paintData = {
         'fill-color': ['match', ['get', 'id_kabkota']],
-        'fill-opacity': 0.4,
+        'fill-opacity': 1,
       }
       console.log(this.geoJson.features);
       this.geoJson.features.forEach((element) => {

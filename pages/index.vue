@@ -77,7 +77,7 @@ export default {
     generatePaint() {
       this.paintData = {
         'fill-color': ['match', ['get', 'province']],
-        'fill-opacity': 0.4,
+        'fill-opacity': 1,
       }
       geoJson.features.forEach((element) => {
         // console.log('elprop',element.properties.province);

@@ -63,8 +63,6 @@ export default {
           this.prov = e.features[0].properties.WADMKC
           this.hover = true
           this.lastFeature = f.properties.WADMKC
-
-          // do something
         }
       })
       map.on('mouseleave', 'area-boundary', (e) => {

@@ -86,7 +86,7 @@ export default {
           nama_lengkap: 'PKB',
         },
         {
-          warna: '#FF0000',
+          warna: '#FF7F01',
           is_aceh: false,
           id_pilihan: 2,
           nomor_urut: 2,
@@ -182,7 +182,7 @@ export default {
           nama_lengkap: 'Hanura',
         },
         {
-          warna: '#191970',
+          warna: '#11ccee',
           is_aceh: false,
           id_pilihan: 14,
           nomor_urut: 14,

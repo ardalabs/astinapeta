@@ -8,7 +8,7 @@ export const party = {
         "nama_lengkap": "PKB"
     },
     "2": {
-        "warna": "#FF0000",
+        "warna": "#FF7F01",
         "is_aceh": false,
         "id_pilihan": 2,
         "nomor_urut": 2,
@@ -104,7 +104,7 @@ export const party = {
         "nama_lengkap": "Hanura"
     },
     "14": {
-        "warna": "#191970",
+        "warna": "#11ccee",
         "is_aceh": false,
         "id_pilihan": 14,
         "nomor_urut": 14,
