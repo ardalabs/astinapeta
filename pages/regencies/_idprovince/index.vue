@@ -13,7 +13,7 @@
     <nuxt-link class="top-left" to="/">
       <img
         height="100%"
-        src="http://cdn.onlinewebfonts.com/svg/img_490217.png"
+        src="~/assets/img/back.png"
         alt=""
         srcset=""
       />
