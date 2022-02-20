@@ -9,16 +9,16 @@
 }
 .top-left{
     position: fixed;
+    padding: 50px;
     left: 0;
     top: 0;
-    height: 75px;
-    padding: 10px;
+    height: 200px;
 }
 .top-right{
     position: fixed;
     top: 0;
     right: 0;
-    padding: 10px;
-    height: 100px;
+    padding: 50px;
+    height: 200px;
     pointer-events: none;
 }
