@@ -93,8 +93,10 @@ export default {
             }
           })
           if (highestkey && element.properties.province) {
-            this.paintData['fill-color'].push(element.properties.province)
-            this.paintData['fill-color'].push(party[highestkey].warna)
+            if(party[highestkey]){
+              this.paintData['fill-color'].push(element.properties.province)
+              this.paintData['fill-color'].push(party[highestkey].warna)
+            }
           }
         }
       })
