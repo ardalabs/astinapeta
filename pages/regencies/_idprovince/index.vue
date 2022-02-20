@@ -108,8 +108,12 @@ export default {
           }
         })
         if(!this.paintData['fill-color'].includes(element.properties.id_kabkota)){
-          this.paintData['fill-color'].push(element.properties.id_kabkota)
-          this.paintData['fill-color'].push(party[highestkey].warna)
+          if(party[highestkey]){
+            this.paintData['fill-color'].push(element.properties.id_kabkota)
+            this.paintData['fill-color'].push(party[highestkey].warna)
+          }else{
+            console.log('disini party',highestkey);
+          }
         }
       })
       this.paintData['fill-color'].push('#0000ff')
