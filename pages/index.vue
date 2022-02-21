@@ -2,7 +2,7 @@
   <div>
     <Loading v-if="loading" />
     <div style="height: 100vh" id="map-conatiner"></div>
-    <SideChart v-if="hover" :wilayah="prov" :dataChart="dataChart" />
+    <SideChart v-if="hover" :wilayah="prov" :dataChart="dataChart" :left="left" />
     <img
       class="top-right"
       height="100px"
@@ -28,6 +28,7 @@ export default {
       lastFeature: '',
       dataChart: [],
       loading: true,
+      left:true,
     }
   },
   methods: {
@@ -40,6 +41,11 @@ export default {
 
       map.on('mousemove', 'area-boundary', (e) => {
         const f = map.queryRenderedFeatures(e.point)[0]
+        if(window.event.screenX<(window.screen.width/2)-0.05*window.screen.width){
+          this.left=false
+        }if(window.event.screenX>(window.screen.width/2)+0.05*window.screen.width){
+          this.left=true
+        }
         if (this.prov !== e.features[0].properties.province) {
           this.hover = false
         }

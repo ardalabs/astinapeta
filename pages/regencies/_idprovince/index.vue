@@ -6,6 +6,7 @@
       :wilayah="prov"
       :dataChart="dataChart"
       :isAceh="isAceh"
+      :left="left"
     />
     <Loading v-if="loading" />
     <img
@@ -36,6 +37,7 @@ export default {
       dataChart: [],
       loading: true,
       isAceh: false,
+      left: true,
     }
   },
   methods: {
@@ -72,6 +74,11 @@ export default {
       })
       map.on('mousemove', 'area-boundary', (e) => {
         const f = map.queryRenderedFeatures(e.point)[0]
+        if(window.event.screenX<(window.screen.width/2)-0.05*window.screen.width){
+          this.left=false
+        }if(window.event.screenX>(window.screen.width/2)+0.05*window.screen.width){
+          this.left=true
+        }
         if (f.properties.id_kabkota !== this.lastFeature) {
           if (this.prov !== e.features[0].properties.id_kabkota) {
             this.hover = false
@@ -92,7 +99,6 @@ export default {
                 this.dataChart.push(0)
               }
             }
-            console.log(this.dataChart)
           }
 
           this.hover = true

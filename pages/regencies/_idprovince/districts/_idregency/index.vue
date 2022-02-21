@@ -6,6 +6,7 @@
       :wilayah="prov"
       :dataChart="dataChart"
       :isAceh="isAceh"
+      :left="left"
     />
     <Loading v-if="loading" />
     <img
@@ -36,6 +37,7 @@ export default {
       dataChart: [],
       loading: true,
       isAceh: false,
+      left: true
     }
   },
   methods: {
@@ -71,6 +73,11 @@ export default {
       map.on('mousemove', 'area-boundary', (e) => {
         if (this.prov !== e.features[0].properties.id_kecamatan) {
           this.hover = false
+        }
+        if(window.event.screenX<(window.screen.width/2)-0.05*window.screen.width){
+          this.left=false
+        }if(window.event.screenX>(window.screen.width/2)+0.05*window.screen.width){
+          this.left=true
         }
         this.prov = e.features[0].properties.nm_kecamatan
         this.dataChart = []

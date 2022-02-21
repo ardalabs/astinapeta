@@ -1,5 +1,5 @@
 <template>
-  <div class="legend pb-3">
+  <div class="legend pb-3" :class="{'rightz':!left,'left':left}">
     <div class="container-fluid h-100 px-0">
       <div class="card h-100 bg-light" style="border-radius: 20px">
         <div>
@@ -38,6 +38,10 @@ export default {
     wilayah: String,
     dataChart: [],
     isAceh:{
+      type:Boolean,
+      default:false
+    },
+    left:{
       type:Boolean,
       default:false
     }

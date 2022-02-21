@@ -3,9 +3,14 @@
     min-width: 25vw;
     padding-left: 15px;
     bottom: 0;
-    left: 0;
     transform: translateY(-20px);
     pointer-events: none;
+}
+.rightz{
+    right: 0;
+}
+.leftz{
+    left: 0;
 }
 .top-left{
     position: fixed;
