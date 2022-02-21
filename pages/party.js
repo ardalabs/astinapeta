@@ -112,7 +112,7 @@ export const party = {
         "nama_lengkap": "Demokrat"
     },
     "15": {
-        "warna": "#000000",
+        "warna": "#d25150",
         "is_aceh": true,
         "id_pilihan": 15,
         "nomor_urut": 15,
@@ -120,7 +120,7 @@ export const party = {
         "nama_lengkap": "PA"
     },
     "16": {
-        "warna": "#000000",
+        "warna": "#c8edff",
         "is_aceh": true,
         "id_pilihan": 16,
         "nomor_urut": 16,
@@ -128,7 +128,7 @@ export const party = {
         "nama_lengkap": "Partai SIRA"
     },
     "17": {
-        "warna": "#000000",
+        "warna": "#93a4e8",
         "is_aceh": true,
         "id_pilihan": 17,
         "nomor_urut": 17,
@@ -136,7 +136,7 @@ export const party = {
         "nama_lengkap": "PD Aceh"
     },
     "18": {
-        "warna": "#000000",
+        "warna": "#f48f61",
         "is_aceh": true,
         "id_pilihan": 18,
         "nomor_urut": 18,
