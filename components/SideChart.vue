@@ -104,11 +104,9 @@ export default {
         this.barChartData.datasets[0].backgroundColor.push(party[key].warna)
         this.barChartData.datasets[0].data = this.dataChart
       })
-      if(!this.isAceh){
         this.barChartData.datasets[0].backgroundColor.splice(14,4)
         this.barChartData.labels.splice(14,4)
         this.barChartData.datasets[0].data.splice(14,4)
-      }
       this.dataReady = true
     },
   },
