@@ -45,6 +45,7 @@ export default {
   },
   proxy: {
     '/v1/': 'https://majapahit.ardalabs.io/hayamwuruk/election',
+    '/geo/': 'https://gondor.ardaworks.id/api/v1'
   },
 
   // PWA module configuration: https://go.nuxtjs.dev/pwa

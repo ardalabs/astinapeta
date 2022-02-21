@@ -100,7 +100,7 @@ export default ({ app }, inject) => {
             'line-cap': 'round',
           },
           paint: {
-            'line-color': '#000000',
+            'line-color': '#ffffff',
             'line-width': 1.5,
             'line-opacity': 0.5,
           },
