@@ -63,12 +63,15 @@ export default {
     getMap() {
       const map = this.$mapgl(this.geoJson, this.paintData)
       map.on('click', 'area-boundary', (e) => {
-        // this.$router.push(
-        //   '/regencies/' +
-        //     this.$route.params.idprovince +
-        //     '/districts/' +
-        //     e.features[0].properties.id_kecamatan
-        // )
+        this.$router.push(
+          '/regencies/' +
+            this.$route.params.idprovince +
+            '/districts/' +
+            e.features[0].properties.id_kecamatan+
+            '/villages/'+
+            e.features[0].properties.nm_kabkota+'/'+
+            e.features[0].properties.nm_kecamatan
+        )
       })
       map.on('mousemove', 'area-boundary', (e) => {
         if (this.prov !== e.features[0].properties.id_kecamatan) {

@@ -73,6 +73,13 @@ export default ({ app }, inject) => {
           break
         }
       }
+      /* eslint-disable */
+      layers.map(function (layer) {
+        if (layer.id.indexOf('road') >= 0) {
+          map.setLayoutProperty(layer.id, 'visibility', 'none');
+        }
+      });
+      /* eslint-enable */
 
       console.log(geoJson)
       map.addSource('area-geo', {
@@ -102,7 +109,7 @@ export default ({ app }, inject) => {
           paint: {
             'line-color': '#ffffff',
             'line-width': 1.5,
-            'line-opacity': 0.5,
+            'line-opacity': 0.8,
           },
         },
         firstSymbolId
