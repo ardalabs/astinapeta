@@ -4,7 +4,7 @@ export default {
     port: 3090,
   },
   head: {
-    title: 'astinapeta',
+    title: 'NasDem Maps',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -44,7 +44,8 @@ export default {
     proxy: true,
   },
   proxy: {
-    '/v1/': 'http://localhost:6070',
+    '/v1/': 'https://majapahit.ardalabs.io/hayamwuruk/election',
+    '/geo/': 'https://gondor.ardaworks.id/api/v1'
   },
 
   // PWA module configuration: https://go.nuxtjs.dev/pwa

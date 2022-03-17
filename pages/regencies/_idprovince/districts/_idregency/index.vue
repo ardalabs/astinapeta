@@ -1,128 +1,110 @@
 <template>
   <div>
     <div style="height: 100vh" id="map-conatiner"></div>
-    <SideChart v-if="hover" :wilayah="prov"/>
+    <SideChart
+      v-if="hover"
+      :wilayah="prov"
+      :dataChart="dataChart"
+      :isAceh="isAceh"
+      :left="left"
+    />
+    <Loading v-if="loading" />
     <img
       class="top-right"
       height="100px"
-      src="https://i0.wp.com/www.dprd-ponorogo.go.id/wp-content/uploads/2021/10/Partai-Nasdem-Preview.png?fit=501%2C301&ssl=1"
+      src="~/assets/img/logo.png"
       alt=""
       srcset=""
     />
-    <nuxt-link class="top-left" to="/regencies/0">
-      <img
-        height="100%"
-        src="http://cdn.onlinewebfonts.com/svg/img_490217.png"
-        alt=""
-        srcset=""
-      />
+    <nuxt-link class="top-left" to="/">
+      <img height="100%" src="~/assets/img/back.png" alt="" srcset="" />
     </nuxt-link>
   </div>
 </template>
 
 <script>
-import mapboxgl from 'mapbox-gl/dist/mapbox-gl.js'
-import { kecJson } from './kecJson'
+import { party } from '../../../../party'
 import 'mapbox-gl/dist/mapbox-gl.css'
 export default {
   data() {
     return {
       paintData: {},
-      hover:false,
-      prov:'',
-      lastFeature:''
+      hover: false,
+      prov: '',
+      lastFeature: '',
+      geoJson: {},
+      dprd: {},
+      dataChart: [],
+      loading: true,
+      isAceh: false,
+      left: true
     }
   },
   methods: {
+    async getGeoData() {
+      await this.$axios
+        .get('/geo/featuredmap/' + this.$route.params.idregency + '/2')
+        .then((res) => {
+          this.geoJson = res.data.data
+        })
+    },
+    async getPartyData() {
+      await this.$axios
+        .get(
+          '/geo/result/dprdpkab/' +
+            this.$route.params.idprovince +
+            '/' +
+            this.$route.params.idregency
+        )
+        .then((res) => {
+          this.dprd = res.data.data
+        })
+    },
     getMap() {
-      mapboxgl.accessToken =
-        'pk.eyJ1IjoiZmFyaXozMTMiLCJhIjoiY2t6cDE4aXB5MjBxMDJvbnh6cTY5dHhzciJ9.mgc1iru7ABp6eaFTEfQQ_Q'
-      // eslint-disable-next-line no-unused-vars
-      const map = new mapboxgl.Map({
-        container: 'map-conatiner',
-        style: 'mapbox://styles/mapbox/outdoors-v11',
-        center: [116.825264, -1.26916],
-        zoom: 3,
+      const map = this.$mapgl(this.geoJson, this.paintData)
+      map.on('click', 'area-boundary', (e) => {
+        this.$router.push(
+          '/regencies/' +
+            this.$route.params.idprovince +
+            '/districts/' +
+            e.features[0].properties.id_kecamatan+
+            '/villages/'+
+            e.features[0].properties.nm_kabkota+'/'+
+            e.features[0].properties.nm_kecamatan
+        )
       })
-      map.on('load', () => {
-        const layers = map.getStyle().layers
-        let firstSymbolId
-        for (const layer of layers) {
-          if (layer.type === 'symbol') {
-            firstSymbolId = layer.id
-            break
+      map.on('mousemove', 'area-boundary', (e) => {
+        if (this.prov !== e.features[0].properties.id_kecamatan) {
+          this.hover = false
+        }
+        if(window.event.screenX<(window.screen.width/2)-0.05*window.screen.width){
+          this.left=false
+        }if(window.event.screenX>(window.screen.width/2)+0.05*window.screen.width){
+          this.left=true
+        }
+        this.prov = e.features[0].properties.nm_kecamatan
+        this.dataChart = []
+        if (this.dprd.table[e.features[0].properties.id_kecamatan]) {
+          for (let index = 0; index < 20; index++) {
+            if (
+              this.dprd.table[e.features[0].properties.id_kecamatan][index + 1]
+            ) {
+              this.dataChart.push(
+                this.dprd.table[e.features[0].properties.id_kecamatan][
+                  index + 1
+                ]
+              )
+            } else {
+              this.dataChart.push(0)
+            }
           }
         }
 
-        console.log(kecJson)
-        map.addSource('area-geo', {
-          type: 'geojson',
-          data: kecJson,
-        })
-
-        map.addLayer(
-          {
-            id: 'area-boundary',
-            type: 'fill',
-            source: 'area-geo',
-            paint: this.paintData,
-            filter: ['==', '$type', 'Polygon'],
-          },
-          firstSymbolId
-        )
-        map.addLayer(
-          {
-            id: 'route',
-            type: 'line',
-            source: 'area-geo',
-            layout: {
-              'line-join': 'round',
-              'line-cap': 'round',
-            },
-            paint: {
-              'line-color': '#000000',
-              'line-width': 1.5,
-              'line-opacity': 0.5,
-            },
-          },
-          firstSymbolId
-        )
-      })
-      map.on('click', 'area-boundary', (e) => {
-       this.$router.push('/regencies/0/districts/0/villages/' + e.features[0].properties.NAMAOBJ)
-      })
-
-      map.on('mousemove', 'area-boundary', (e) => {
-        const f = map.queryRenderedFeatures(e.point)[0];
-            if (f.properties.WADMKC !== this.lastFeature) {
-              this.prov = e.features[0].properties.WADMKC
-              this.hover = true
-              this.lastFeature = f.properties.WADMKC;
-
-                // do something
-            }
+        this.hover = true
       })
       map.on('mouseleave', 'area-boundary', (e) => {
         this.prov = ''
         this.hover = false
-      })
-      const coordinates = [
-        [111.94700640803094, -7.768076305331418],
-        [112.08376620243607, -7.9269329259617],
-      ]
-      // Create a 'LngLatBounds' with both corners at the first coordinate.
-      const bounds = new mapboxgl.LngLatBounds(
-        [111.92813787110968, -7.758769538628023],
-        [112.10670330170493, -7.9367982630718075]
-      )
-
-      // Extend the 'LngLatBounds' to include every coordinate in the bounds result.
-      for (const coord of coordinates) {
-        bounds.extend(coord)
-      }
-
-      map.fitBounds(bounds, {
-        padding: 20,
       })
     },
     getRndInteger(min, max) {
@@ -130,14 +112,36 @@ export default {
     },
     generatePaint() {
       this.paintData = {
-        'fill-color': ['match', ['get', 'WADMKC']],
-        'fill-opacity': 0.4,
+        'fill-color': ['match', ['get', 'id_kecamatan']],
+        'fill-opacity': 1,
       }
-      kecJson.features.forEach((element) => {
-        if (!this.paintData['fill-color'].includes(element.properties.WADMKC)) {
-          const randColor = ['#fff000', '#003cff', '#f10b00', '#00ff11']
-          this.paintData['fill-color'].push(element.properties.WADMKC)
-          this.paintData['fill-color'].push(randColor[this.getRndInteger(0, 4)])
+      console.log(this.geoJson.features)
+      this.geoJson.features.forEach((element) => {
+        let highest = 0
+        let highestkey = ''
+        Object.keys(this.dprd.table[element.properties.id_kecamatan]).forEach(
+          (key) => {
+            if (key !== 'persen') {
+              if (
+                highest < this.dprd.table[element.properties.id_kecamatan][key]
+              ) {
+                highest = this.dprd.table[element.properties.id_kecamatan][key]
+                highestkey = key
+              }
+            }
+          }
+        )
+        if (
+          !this.paintData['fill-color'].includes(
+            element.properties.id_kecamatan
+          )
+        ) {
+          if (party[highestkey]) {
+            this.paintData['fill-color'].push(element.properties.id_kecamatan)
+            this.paintData['fill-color'].push(party[highestkey].warna)
+          } else {
+            console.log('disini party', highestkey)
+          }
         }
       })
       this.paintData['fill-color'].push('#0000ff')
@@ -145,8 +149,18 @@ export default {
     },
   },
   mounted() {
-    this.generatePaint()
-    this.getMap()
+    if (this.$route.params.idprovince === '1') {
+      this.isAceh = true
+    }
+    this.getPartyData().then(() => {
+      this.getGeoData().then(() => {
+        this.generatePaint()
+        this.getMap()
+        this.loading = false
+      })
+    })
+    // this.generatePaint()
+    // this.getMap()
   },
 }
 </script>

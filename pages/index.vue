@@ -1,11 +1,12 @@
 <template>
   <div>
+    <Loading v-if="loading" />
     <div style="height: 100vh" id="map-conatiner"></div>
-    <SideChart v-if="hover" :wilayah="prov" />
+    <SideChart v-if="hover" :wilayah="prov" :dataChart="dataChart" :left="left" />
     <img
       class="top-right"
       height="100px"
-      src="https://i0.wp.com/www.dprd-ponorogo.go.id/wp-content/uploads/2021/10/Partai-Nasdem-Preview.png?fit=501%2C301&ssl=1"
+      src="~/assets/img/logo.png"
       alt=""
       srcset=""
     />
@@ -13,7 +14,10 @@
 </template>
 
 <script>
-// import mapboxgl from 'mapbox-gl/dist/mapbox-gl.js'
+import { geoJson } from './geoJson'
+import { dprri } from './dprri'
+import { party } from './party'
+import { masterprov } from './masterprov'
 import 'mapbox-gl/dist/mapbox-gl.css'
 export default {
   data() {
@@ -22,35 +26,53 @@ export default {
       prov: '',
       hover: false,
       lastFeature: '',
-      geoJson: {
-        type: 'FeatureCollection',
-        features: [],
-      },
+      dataChart: [],
+      loading: true,
+      left:true,
     }
   },
   methods: {
-    async getData() {
-      await this.$axios.get('/v1/geo/province').then((res) => {
-        this.geoJson.features = res.data.data
-        console.log('geo',this.geoJson);
-      })
-    },
     getMap() {
-      const map = this.$mapgl(this.geoJson, this.paintData)
+      const map = this.$mapgl(geoJson, this.paintData)
       map.on('click', 'area-boundary', (e) => {
-        this.$router.push('/regencies/' + e.features[0].properties.province)
+        const idwil = this.search(e.features[0].properties.province, masterprov)
+        this.$router.push('/regencies/' + idwil.id)
       })
 
       map.on('mousemove', 'area-boundary', (e) => {
         const f = map.queryRenderedFeatures(e.point)[0]
-        if (f.properties.province !== this.lastFeature) {
-          this.prov = e.features[0].properties.province
-          this.hover = true
-          this.lastFeature = f.properties.province
+        if(window.event.screenX<(window.screen.width/2)-0.05*window.screen.width){
+          this.left=false
+        }if(window.event.screenX>(window.screen.width/2)+0.05*window.screen.width){
+          this.left=true
         }
+        if (this.prov !== e.features[0].properties.province) {
+          this.hover = false
+        }
+        this.prov = e.features[0].properties.province
+        const provinfo = this.search(
+          e.features[0].properties.province,
+          masterprov
+        )
+        if (provinfo) {
+          this.dataChart = []
+          if (dprri.table[provinfo.id]) {
+            for (let index = 0; index < 20; index++) {
+              if (dprri.table[provinfo.id][index + 1]) {
+                this.dataChart.push(dprri.table[provinfo.id][index + 1])
+              } else {
+                this.dataChart.push(0)
+              }
+            }
+          }
+        }
+
+        this.hover = true
+        this.lastFeature = f.properties.province
       })
       map.on('mouseleave', 'area-boundary', (e) => {
         this.prov = ''
+        this.dataChart = {}
         this.hover = false
       })
     },
@@ -60,22 +82,44 @@ export default {
     generatePaint() {
       this.paintData = {
         'fill-color': ['match', ['get', 'province']],
-        'fill-opacity': 0.4,
+        'fill-opacity': 1,
       }
-      this.geoJson.features.forEach((element) => {
-        const randColor = ['#fff000', '#003cff', '#f10b00', '#00ff11']
-        this.paintData['fill-color'].push(element.properties.province)
-        this.paintData['fill-color'].push(randColor[this.getRndInteger(0, 4)])
+      geoJson.features.forEach((element) => {
+        // console.log('elprop',element.properties.province);
+        const idwil = this.search(element.properties.province, masterprov)
+        if (idwil) {
+          let highest = 0
+          let highestkey = ''
+          Object.keys(dprri.table[idwil.id]).forEach((key) => {
+            if (key !== 'persen') {
+              if (highest < dprri.table[idwil.id][key]) {
+                highest = dprri.table[idwil.id][key]
+                highestkey = key
+              }
+            }
+          })
+          if (highestkey && element.properties.province) {
+            if(party[highestkey]){
+              this.paintData['fill-color'].push(element.properties.province)
+              this.paintData['fill-color'].push(party[highestkey].warna)
+            }
+          }
+        }
       })
-      this.paintData['fill-color'].push('#0000ff')
-      console.log('paint',this.paintData)
+      this.paintData['fill-color'].push('#000000')
+    },
+    search(nameKey, myArray) {
+      for (let i = 0; i < myArray.length; i++) {
+        if (myArray[i].namaWilayah === nameKey) {
+          return myArray[i]
+        }
+      }
     },
   },
   mounted() {
-    this.getData().then(() => {
-      this.generatePaint()
-      this.getMap()
-    })
+    this.generatePaint()
+    this.getMap()
+    this.loading = false
   },
 }
 </script>
