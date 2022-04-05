@@ -118,7 +118,7 @@ export default {
         'fill-color': ['match', ['get', 'id_kabkota']],
         'fill-opacity': 1,
       }
-      console.log(this.geoJson.features)
+      // console.log(this.geoJson.features)
       this.geoJson.features.forEach((element) => {
         let highest = 0
         let highestkey = ''
@@ -141,7 +141,7 @@ export default {
             this.paintData['fill-color'].push(element.properties.id_kabkota)
             this.paintData['fill-color'].push(party[highestkey].warna)
           } else {
-            console.log('disini party', highestkey)
+            // console.log('disini party', highestkey)
           }
         }
       })

@@ -8,7 +8,7 @@ export default ({ app }, inject) => {
     let xMin = 180
     let yMin = 90
     const getCorner = (geojson) => {
-      console.log('gj', geojson)
+      // console.log('gj', geojson)
       geojson.features.forEach((gj) => {
         if (gj.geometry) {
           if (gj.geometry.type === 'Polygon') {
@@ -50,8 +50,8 @@ export default ({ app }, inject) => {
           }
         }
       })
-      console.log(xMax, yMax)
-      console.log(xMin, yMin)
+      // console.log(xMax, yMax)
+      // console.log(xMin, yMin)
     }
     getCorner(geoJson)
     mapboxgl.accessToken =
@@ -68,7 +68,7 @@ export default ({ app }, inject) => {
       let firstSymbolId
       for (const layer of layers) {
         if (layer.type === 'symbol') {
-          console.log(layer.type)
+          // console.log(layer.type)
           firstSymbolId = layer.id
           break
         }
@@ -81,7 +81,7 @@ export default ({ app }, inject) => {
       });
       /* eslint-enable */
 
-      console.log(geoJson)
+      // console.log(geoJson)
       map.addSource('area-geo', {
         type: 'geojson',
         data: geoJson,

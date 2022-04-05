@@ -115,7 +115,7 @@ export default {
         'fill-color': ['match', ['get', 'id_kecamatan']],
         'fill-opacity': 1,
       }
-      console.log(this.geoJson.features)
+      // console.log(this.geoJson.features)
       this.geoJson.features.forEach((element) => {
         let highest = 0
         let highestkey = ''
@@ -140,12 +140,12 @@ export default {
             this.paintData['fill-color'].push(element.properties.id_kecamatan)
             this.paintData['fill-color'].push(party[highestkey].warna)
           } else {
-            console.log('disini party', highestkey)
+            // console.log('disini party', highestkey)
           }
         }
       })
       this.paintData['fill-color'].push('#0000ff')
-      console.log(this.paintData)
+      // console.log(this.paintData)
     },
   },
   mounted() {
